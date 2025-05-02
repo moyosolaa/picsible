@@ -105,9 +105,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   GestureDetector(
-                    onTapDown: (_) => setState(() => _isLoading = true),
-                    onTapUp: (_) => setState(() => _isLoading = false),
-                    onTapCancel: () => setState(() => _isLoading = false),
                     child: CupertinoButton.filled(
                       onPressed:
                           () => showCupertinoModalPopup(
@@ -116,11 +113,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                 (context) => ImageSourceSheet(
                                   onCameraSelected: () {
                                     Navigator.pop(context);
-                                    _pickImage(ImageSource.camera);
+                                    _pickImage(ImageSource.camera, withEditing: true);
                                   },
                                   onGallerySelected: () {
                                     Navigator.pop(context);
-                                    _pickImage(ImageSource.gallery);
+                                    _pickImage(ImageSource.gallery, withEditing: true);
                                   },
                                 ),
                           ),

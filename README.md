@@ -1,6 +1,8 @@
-# Picsible
+# Picsible Test
 
-Picsible is a Flutter-based mobile application that allows users to capture, select, and edit images with various enhancement features. The app provides a clean, intuitive interface for image manipulation with iOS-style design elements.
+This is a test by Picsible to build a Flutter-based mobile application that allows users to capture, select, and edit images with various enhancement features. The app provides a clean, intuitive interface for image manipulation with iOS-style design elements.
+
+💡 **Pro Tip**: Try long-pressing or double-tapping the "Select Image" button to unlock additional editing features! These gestures reveal advanced tools for professional-grade image enhancements and creative filters.
 
 ## Features
 
@@ -15,6 +17,18 @@ Picsible is a Flutter-based mobile application that allows users to capture, sel
   - Adjust saturation
 - Permission handling for camera and storage access
 - iOS-style UI with CupertinoDesign
+
+## Usage
+
+1. Launch the app
+2. Tap "Select Image" to either:
+   - Take a new photo using the camera
+   - Select an existing photo from the gallery
+3. Use the editing tools to enhance your image:
+   - Adjust brightness, contrast, and saturation using sliders
+   - Crop the image using the crop tool
+   - Rotate or flip the image as needed
+4. Save your edited image
 
 ## Prerequisites
 
@@ -79,18 +93,6 @@ The project uses the following main dependencies:
    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
    ```
-
-## Usage
-
-1. Launch the app
-2. Tap "Select Image" to either:
-   - Take a new photo using the camera
-   - Select an existing photo from the gallery
-3. Use the editing tools to enhance your image:
-   - Adjust brightness, contrast, and saturation using sliders
-   - Crop the image using the crop tool
-   - Rotate or flip the image as needed
-4. Save your edited image
 
 ## License
 

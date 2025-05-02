@@ -21,33 +21,35 @@ class _HomeScreenState extends State<HomeScreen> {
   final ImagePicker _picker = ImagePicker();
   bool _isLoading = false;
 
-  Future<void> _pickImage(ImageSource source) async {
+  Future<void> _pickImage(ImageSource source, {bool withEditing = false}) async {
     try {
       final permissionGranted = await PermissionService.requestPermission(context, source);
       if (!permissionGranted) return;
 
       final XFile? pickedFile = await _picker.pickImage(source: source);
       if (pickedFile != null) {
+        File imageFile = File(pickedFile.path);
+
+        if (withEditing) {
+          final File? editedImage = await Navigator.push<File>(
+            context,
+            MaterialPageRoute(builder: (context) => EnhancedImageEditorScreen(image: imageFile)),
+          );
+          if (editedImage != null) {
+            imageFile = editedImage;
+          } else {
+            return;
+          }
+        }
+
         setState(() {
-          _image = null;
           _isLoading = true;
         });
-
-        final File? editedImage = await Navigator.push<File>(
-          context,
-          MaterialPageRoute(builder: (context) => EnhancedImageEditorScreen(image: File(pickedFile.path))),
-        );
-
-        if (editedImage != null) {
-          setState(() {
-            _isLoading = true;
-          });
-          await Future.delayed(const Duration(seconds: 1));
-          setState(() {
-            _image = editedImage;
-            _isLoading = false;
-          });
-        }
+        await Future.delayed(const Duration(seconds: 1));
+        setState(() {
+          _image = imageFile;
+          _isLoading = false;
+        });
       }
     } catch (e) {
       showCupertinoDialog(
@@ -102,23 +104,43 @@ class _HomeScreenState extends State<HomeScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  CupertinoButton.filled(
-                    onPressed:
-                        () => showCupertinoModalPopup(
-                          context: context,
-                          builder:
-                              (context) => ImageSourceSheet(
-                                onCameraSelected: () {
-                                  Navigator.pop(context);
-                                  _pickImage(ImageSource.camera);
-                                },
-                                onGallerySelected: () {
-                                  Navigator.pop(context);
-                                  _pickImage(ImageSource.gallery);
-                                },
-                              ),
-                        ),
-                    child: const Text('Select Image'),
+                  GestureDetector(
+                    onTapDown: (_) => setState(() => _isLoading = true),
+                    onTapUp: (_) => setState(() => _isLoading = false),
+                    onTapCancel: () => setState(() => _isLoading = false),
+                    child: CupertinoButton.filled(
+                      onPressed:
+                          () => showCupertinoModalPopup(
+                            context: context,
+                            builder:
+                                (context) => ImageSourceSheet(
+                                  onCameraSelected: () {
+                                    Navigator.pop(context);
+                                    _pickImage(ImageSource.camera);
+                                  },
+                                  onGallerySelected: () {
+                                    Navigator.pop(context);
+                                    _pickImage(ImageSource.gallery);
+                                  },
+                                ),
+                          ),
+                      onLongPress:
+                          () => showCupertinoModalPopup(
+                            context: context,
+                            builder:
+                                (context) => ImageSourceSheet(
+                                  onCameraSelected: () {
+                                    Navigator.pop(context);
+                                    _pickImage(ImageSource.camera, withEditing: true);
+                                  },
+                                  onGallerySelected: () {
+                                    Navigator.pop(context);
+                                    _pickImage(ImageSource.gallery, withEditing: true);
+                                  },
+                                ),
+                          ),
+                      child: const Text('Select Image'),
+                    ),
                   ),
                   if (_image != null) CupertinoButton(onPressed: _clearImage, child: const Text('Clear')),
                 ],

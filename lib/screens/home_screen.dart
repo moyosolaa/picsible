@@ -19,6 +19,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   File? _image;
   final ImagePicker _picker = ImagePicker();
+  bool _isLoading = false;
 
   Future<void> _pickImage(ImageSource source) async {
     try {
@@ -29,6 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
       if (pickedFile != null) {
         setState(() {
           _image = null;
+          _isLoading = true;
         });
 
         final File? editedImage = await Navigator.push<File>(
@@ -38,7 +40,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
         if (editedImage != null) {
           setState(() {
+            _isLoading = true;
+          });
+          await Future.delayed(const Duration(seconds: 1));
+          setState(() {
             _image = editedImage;
+            _isLoading = false;
           });
         }
       }
@@ -57,9 +64,14 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  void _clearImage() {
+  void _clearImage() async {
+    setState(() {
+      _isLoading = true;
+    });
+    await Future.delayed(const Duration(seconds: 1));
     setState(() {
       _image = null;
+      _isLoading = false;
     });
   }
 
@@ -76,7 +88,9 @@ class _HomeScreenState extends State<HomeScreen> {
               Expanded(
                 child: Center(
                   child:
-                      _image == null
+                      _isLoading
+                          ? const CupertinoActivityIndicator()
+                          : _image == null
                           ? const ImagePlaceholder()
                           : ClipRRect(
                             borderRadius: BorderRadius.circular(12),
